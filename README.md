@@ -1,12 +1,14 @@
 
 Added support for PiAware 5.0
+
 Added callsign and altitude tags to the display...
 
-you now need to run radar.py instead of piawareradar.py...
+You now need to run radar.py instead of piawareradar.py...
 
  ``` python3 PiAwareRadar/piawareradar/radar.py 12.3456 -12.3456```
 
 Bugs...  first ever python here for me,  there is a bug where the tags don't black out properly and leave streaks.
+.
 
 
 [everything below is from the original repo...]
