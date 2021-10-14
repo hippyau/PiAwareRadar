@@ -14,9 +14,18 @@ Circle on line equation - http://codereview.stackexchange.com/questions/86421/li
 import pygame
 import math
 import threading
+import piawareradar
+
+
+FONT = "monospace"
+FONTSIZE = 16
+LINESPACE = 20
 
 BLACK = (0, 0, 0)
 GREEN = (0, 255, 0)
+
+pygame.init()
+myfont = pygame.font.SysFont(FONT, FONTSIZE)
 
 class Radar(threading.Thread):
     
@@ -141,7 +150,7 @@ class Radar(threading.Thread):
         self.scale = new_scale
         for key, dot in self.dots.copy().items():
             self.dot_move(key, dot.x, dot.y)
-            
+
 
 class RadarDot():
  
@@ -192,6 +201,11 @@ class RadarDot():
             pygame.draw.ellipse(self.screen,
                                 fade_steps[self.fade_step],
                                 (lastx - self.radius, lasty - self.radius, self.radius, self.radius), 0)
+            if (self.data != None):                                
+                callsign_text = piawareradar.myfont.render(self.data.flight, 1, GREEN) 
+                alt_text = piawareradar.myfont.render(str(self.data.altitude), 1, GREEN) 
+                self.screen.blit (callsign_text, (self.x, self.y))
+                self.screen.blit (alt_text, (self.x, self.y + LINESPACE))
             
             #pygame.display.update()
 
@@ -205,6 +219,11 @@ class RadarDot():
             pygame.draw.ellipse(self.screen,
                                 self.back_col,
                                 (lastx - self.radius, lasty - self.radius, self.radius, self.radius), 0)
+            if (self.data != None):                                
+                callsign_text = piawareradar.myfont.render(self.data.flight, 1, BLACK) 
+                alt_text = piawareradar.myfont.render(str(self.data.altitude), 1, BLACK) 
+                self.screen.blit (callsign_text, (lastx, lasty))
+                self.screen.blit (alt_text, (lastx, lasty + LINESPACE))
 
             self.fade_step += 1
 
@@ -266,7 +285,8 @@ class RadarDot():
         t = max(0, min(1, - b / (2 * a)))
         return True, P1 + t * V
 
-if __name__ == "__main__":
+
+""" if __name__ == "__main__":
 
     pygame.init()
 
@@ -304,3 +324,4 @@ if __name__ == "__main__":
     radar.stop()
 
     pygame.quit()
+ """

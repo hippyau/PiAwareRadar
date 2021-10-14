@@ -43,7 +43,8 @@ else:
 #create the piaware url
 piawareip = args.piawareip
 if piawareip == None: piawareip = "localhost"
-piaware_url = "http://{}:8080/data.json".format(piawareip)
+piaware_url = "http://{}:8080/data/aircraft.json".format(piawareip)
+
 
 #set default scale
 scale = 0.001

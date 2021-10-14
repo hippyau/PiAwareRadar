@@ -2,7 +2,7 @@ from urllib.request import urlopen
 import json
 from time import sleep
 
-DUMP1090DATAURL = "http://localhost:8080/data.json"
+DUMP1090DATAURL = "http://192.168.1.166:8080/data/aircraft.json"
 
 class FlightData():
     def __init__(self, data_url = DUMP1090DATAURL):
@@ -22,13 +22,13 @@ class FlightData():
         encoding = self.req.headers.get_content_charset()
 
         #load in the json
-        self.json_data = json.loads(self.raw_data.decode(encoding))
+        self.json_data = json.loads(self.raw_data.decode())
 
         self.aircraft = AirCraftData.parse_flightdata_json(self.json_data)
 
     def _refresh(self):
 
-        data_file = open("data.json")
+        data_file = open("aircraft.json")
         
         #load in the json
         self.json_data = json.load(data_file)
@@ -70,22 +70,96 @@ class AirCraftData():
     @staticmethod
     def parse_flightdata_json(json_data):
         aircraft_list = []
-        for aircraft in json_data:
+        for aircraft in json_data['aircraft']:
+
+            if not (aircraft.get("hex") is None):
+                ahex = aircraft["hex"]
+            else:
+                ahex = "0000"
+
+            if not (aircraft.get("squawk") is None):
+                asquawk = aircraft["squawk"]
+            else:
+                asquawk = ""
+
+            if not (aircraft.get("flight") is None):
+                aflight = aircraft["flight"]
+            else:
+                if (asquawk != ""):
+                    aflight = asquawk
+                else:
+                    aflight = "???"
+
+            if not (aircraft.get("lat") is None):
+                alat = aircraft["lat"]
+            else:
+                alat = ""
+
+            if not (aircraft.get("lon") is None):
+                alon = aircraft["lon"]
+            else:
+                alon = ""
+
+            if not (aircraft.get("validposition") is None):
+                avp = aircraft["validposition"]
+            else:
+                if ((alat != "") & (alon != "")):
+                    avp = 1
+                else: avp = 0
+
+            if not (aircraft.get("alt_baro") is None):
+                alt = aircraft["alt_baro"]
+            else:
+                alt = "0"
+
+            if not (aircraft.get("baro_rate") is None):
+                altr = aircraft["baro_rate"]
+            else:
+                altr = "0"
+
+            if not (aircraft.get("track") is None):
+                atrack = aircraft["track"]
+                atrackv = 1
+            else:
+                atrack = "0"
+                atrackv = 0
+
+            if not (aircraft.get("ias") is None):
+                aias = aircraft["ias"]
+            else:
+                aias = "0"
+
+            if not (aircraft.get("messages") is None):
+                amsg = aircraft["messages"]
+            else:
+                amsg = "0"
+
+            if not (aircraft.get("seen") is None):
+                aseen = aircraft["seen"]
+            else:
+                aseen = "0"
+
+            if not (aircraft.get("mlat") is None):
+                amlat = aircraft["mlat"]
+            else:
+                amlat = "0"
+
             aircraftdata = AirCraftData(
-                aircraft["hex"],
-                aircraft["squawk"],
-                aircraft["flight"],
-                aircraft["lat"],
-                aircraft["lon"],
-                aircraft["validposition"],
-                aircraft["altitude"],
-                aircraft["vert_rate"],
-                aircraft["track"],
-                aircraft["validtrack"],
-                aircraft["speed"],
-                aircraft["messages"],
-                aircraft["seen"],
-                aircraft["mlat"])
+                ahex,
+                asquawk,
+                aflight,
+                alat,
+                alon,
+                avp,                
+                alt,
+                altr,
+                atrack,
+                atrackv,                
+                aias,
+                amsg,
+                aseen,
+                amlat)
+
             aircraft_list.append(aircraftdata)
         return aircraft_list
 
